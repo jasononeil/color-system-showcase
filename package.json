@@ -1,0 +1,27 @@
+{
+  "name": "color-system-enthraler",
+  "version": "0.0.1",
+  "description": "An enthraler template for showcasing a color palette, including tint and shade variations, with built in copy-paste of color codes and accessibility hints",
+  "author": "Jason O'Neil",
+  "license": "MIT",
+  "scripts": {
+    "start": "cultureamp-front-end-scripts-start",
+    "build": "cultureamp-front-end-scripts-build",
+    "test": "cultureamp-front-end-scripts-test",
+    "lint": "cultureamp-front-end-scripts-lint",
+    "flow": "cultureamp-front-end-scripts-flow",
+    "format": "cultureamp-front-end-scripts-format"
+  },
+  "dependencies": {
+    "color": "^3.0.0",
+    "cultureamp-front-end-scripts": "https://github.com/cultureamp/cultureamp-front-end-scripts#front-end/presets",
+    "glamor": "^2.20.40",
+    "glamorous": "^4.12.1",
+    "prop-types": "^15.6.1",
+    "wcag-contrast-verifier": "^1.1.0"
+  },
+  "enthraler": {
+    "main": "public/assets/main.bundle.js",
+    "schema": "src/schema.json"
+  }
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Enthraler Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <iframe class="enthraler-embed" id="embed-example-1" sandbox="allow-same-origin allow-popups allow-presentation allow-scripts allow-forms"
+        frameborder="0" style="display: block; width: 100%; max-width: 100%; height: 350px;"></iframe>
+    <script src="https://cdn.rawgit.com/enthraler/enthraler/0.1.0/bin/enthralerHost.js"></script>
+    <script>
+        (function () {
+            var frame = window.location.origin + '/enthraler/frame.html';
+            var enthralerJs = window.location.origin + '/assets/main.bundle.js';
+            var authorData = window.location.origin + '/example.json';
+            var src = frame + '#?template=' + enthralerJs + '&authorData=' + authorData;
+            console.log('Load enthraler with iframe', src);
+            var iframe = document.getElementById('embed-example-1');
+            iframe.setAttribute('src', src);
+        })()
+    </script>
+</body>
+
+
+</html>
