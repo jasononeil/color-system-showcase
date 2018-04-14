@@ -1,18 +1,23 @@
-<html>
+<html lang="en">
+
 <head>
 	<meta charset="utf-8"></meta>
 	<title>Enthraler Embedded Content</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"></link>
 	<style type="text/css" id="enthraler-css">
 		* {
-			font-family: "Helvetica Neue", Helvetica,Arial, sans-serif;
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 		}
-		html, body {
+
+		html,
+		body {
 			font-size: 1rem;
 		}
+
 		body {
 			padding-bottom: 18px;
 		}
+
 		#enthraler-footer {
 			/* Structural. */
 			position: fixed;
@@ -29,48 +34,54 @@
 			background-image: linear-gradient(to-right, rgb(249, 249, 249), rgb(230, 230, 230));
 			color: rgb(27, 118, 136);
 		}
+
 		#enthraler-footer a {
 			color: rgb(27, 118, 136);
 			text-decoration: none;
 		}
+
 		#enthraler-footer a:hover {
 			text-decoration: underline;
 		}
 	</style>
 </head>
+
 <body>
-	<div id="container"></div>
+	<div id="container" role="main"></div>
 	<noscript>
 		<h1>We can't display this content</h1>
 		<p>There is content embedded here that cannot be displayed because Javascript is disabled.</p>
 	</noscript>
-	<div id="enthraler-footer">
-		<a href="https://enthraler.com" target="editor"><em>Made with Enthraler.</em></a>
+	<div id="enthraler-footer" role="contentinfo">
+		<a href="https://enthraler.com" target="editor">
+			<em>Made with Enthraler.</em>
+		</a>
 	</div>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js"></script>
 	<script type="text/javascript">
-	(function () {
-		function browserSupportsAllFeatures() {
-			return window.Promise && window.fetch;
-		}
-		function loadScript(src, done) {
-			var js = document.createElement('script');
-			js.src = src;
-			js.onload = function() {if (done) {done();}}
-			js.onerror = function() {throw new js.Error('Failed to load script ' + src);}
-			document.head.appendChild(js);
-		}
-		function main() {
-			loadScript('enthralerFrame.js');
-		}
-		if (browserSupportsAllFeatures()) {
-			// Browsers that support all features run `main()` immediately.
-			main();
-		} else {
-			// All other browsers loads polyfills and then run `main()`.
-			loadScript('assets/polyfills.bundle.js', main);
-		}
-	})();
+		(function () {
+			function browserSupportsAllFeatures() {
+				return window.Promise && window.fetch;
+			}
+			function loadScript(src, done) {
+				var js = document.createElement('script');
+				js.src = src;
+				js.onload = function () {if (done) {done();} }
+				js.onerror = function () {throw new js.Error('Failed to load script ' + src);}
+				document.head.appendChild(js);
+			}
+			function main() {
+				loadScript('enthralerFrame.js');
+			}
+			if (browserSupportsAllFeatures()) {
+				// Browsers that support all features run `main()` immediately.
+				main();
+			} else {
+				// All other browsers loads polyfills and then run `main()`.
+				loadScript('assets/polyfills.bundle.js', main);
+			}
+		})();
 	</script>
 </body>
+
 </html>

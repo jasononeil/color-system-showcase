@@ -5,37 +5,6 @@ import Color from "color";
 import wcag from "wcag-contrast-verifier/lib/wcag";
 const styles = {};
 
-// TODO: load these through as props.
-const Palette = [
-  {
-    title: "Primary Colors",
-    colors: [
-      { name: "Coral", hex: "#f04c5d" },
-      { name: "Paper", hex: "#f2edde" },
-      { name: "Ink", hex: "#3e4543" }
-    ]
-  },
-  {
-    title: "Secondary Colors",
-    colors: [
-      { name: "Seedling", hex: "#45ad8f" },
-      { name: "Ocean", hex: "#1b7688" },
-      { name: "Wisteria", hex: "#727193" },
-      { name: "Lapis", hex: "#253c64" },
-      { name: "Peach", hex: "#f3786d" },
-      { name: "Yuzu", hex: "#ffce1e" }
-    ]
-  },
-  {
-    title: "Tertiary Colors",
-    colors: [
-      { name: "Stone", hex: "#f9f9f9" },
-      { name: "Positive Delta", hex: "#43e699" },
-      { name: "Negative Delta", hex: "#ff4757" }
-    ]
-  }
-];
-
 export default class ColorSystemShowcase extends React.Component {
   state = {
     showAccessibility: {}
@@ -48,9 +17,14 @@ export default class ColorSystemShowcase extends React.Component {
       gridGap: "1rem",
       justifyContent: "space-between"
     });
+    const Title = glamorous.h1({
+      gridColumn: "1 / -1",
+      fontWeight: 200
+    });
     return (
       <Grid>
-        {Palette.map(section =>
+        <Title>{this.props.title}</Title>
+        {this.props.palette.map(section =>
           this.renderColorSection(section.title, section.colors)
         )}
       </Grid>

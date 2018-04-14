@@ -1,1 +1,32 @@
-{}
+{
+  "title": "Culture Amp Brand Colors",
+  "palette": [
+    {
+      "title": "Primary Colors",
+      "colors": [
+        { "name": "Coral", "hex": "#f04c5d" },
+        { "name": "Paper", "hex": "#f2edde" },
+        { "name": "Ink", "hex": "#3e4543" }
+      ]
+    },
+    {
+      "title": "Secondary Colors",
+      "colors": [
+        { "name": "Seedling", "hex": "#45ad8f" },
+        { "name": "Ocean", "hex": "#1b7688" },
+        { "name": "Wisteria", "hex": "#727193" },
+        { "name": "Lapis", "hex": "#253c64" },
+        { "name": "Peach", "hex": "#f3786d" },
+        { "name": "Yuzu", "hex": "#ffce1e" }
+      ]
+    },
+    {
+      "title": "Tertiary Colors",
+      "colors": [
+        { "name": "Stone", "hex": "#f9f9f9" },
+        { "name": "Positive Delta", "hex": "#43e699" },
+        { "name": "Negative Delta", "hex": "#ff4757" }
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ class ColorSystemEnthraler {
 
   render(authorData) {
     ReactDOM.render(
-      <ColorSystemShowcase />,
+      <ColorSystemShowcase {...authorData} />,
       this.container,
       // After render, update the height of the iFrame.
       () => this.environment.requestHeightChange()
