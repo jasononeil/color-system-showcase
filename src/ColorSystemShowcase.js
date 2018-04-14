@@ -103,31 +103,55 @@ class ColorCard extends React.Component {
   render() {
     const name = this.props.name;
     const hex = this.props.hex;
-    const Title = glamorous.div({
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "flex-end"
+    const Title = glamorous.h3({
+      fontWeight: 200,
+      margin: 0
     });
-    const Header = glamorous.h3({
-      flex: 1,
-      fontWeight: 200
+    const ColorCardTable = glamorous.table({
+      width: "100%",
+      borderSpacing: "0 1px"
     });
     return (
       <div>
         <div className={styles.colorCard}>
-          <Title>
-            <Header>{this.props.name}</Header>
-            <AccessibilityHeaderIcon isWhite={true} isLarge={false} hex={hex} />
-            <AccessibilityHeaderIcon isWhite={true} isLarge={true} hex={hex} />
-            <AccessibilityHeaderIcon
-              isWhite={false}
-              isLarge={false}
-              hex={hex}
-            />
-            <AccessibilityHeaderIcon isWhite={false} isLarge={true} hex={hex} />
-          </Title>
-          <table />
-          {this.renderColorBlocks()}
+          <ColorCardTable>
+            <thead>
+              <tr>
+                <th>
+                  <Title>{this.props.name}</Title>
+                </th>
+                <th>
+                  <AccessibilityHeaderIcon
+                    isWhite={true}
+                    isLarge={false}
+                    hex={hex}
+                  />
+                </th>
+                <th>
+                  <AccessibilityHeaderIcon
+                    isWhite={true}
+                    isLarge={true}
+                    hex={hex}
+                  />
+                </th>
+                <th>
+                  <AccessibilityHeaderIcon
+                    isWhite={false}
+                    isLarge={false}
+                    hex={hex}
+                  />
+                </th>
+                <th>
+                  <AccessibilityHeaderIcon
+                    isWhite={false}
+                    isLarge={true}
+                    hex={hex}
+                  />
+                </th>
+              </tr>
+            </thead>
+            <tbody>{this.renderColorBlocks()}</tbody>
+          </ColorCardTable>
         </div>
       </div>
     );
@@ -154,13 +178,12 @@ function AccessibilityHeaderIcon({ isWhite, isLarge, hex }) {
   const title =
     (isWhite ? "White text " : "Ink text ") +
     (isLarge ? "18pt (24px) or larger" : "smaller than 18pt (24px)");
-  console.log("background", hex);
   const TileContainer = glamorous.div({
     flex: `0 0 ${accessibilityTileWidth}`
   });
   const Tile = glamorous.span({
-    color: isWhite ? "white" : hex,
-    backgroundColor: isWhite ? hex : "white",
+    color: isWhite ? "white" : "black",
+    backgroundColor: hex,
     fontSize: isLarge ? "14px" : "10px",
     lineHeight: isLarge ? "19px" : "18px",
     display: "block",
@@ -174,7 +197,7 @@ function AccessibilityHeaderIcon({ isWhite, isLarge, hex }) {
   });
   return (
     <TileContainer>
-      <Tile>A</Tile>
+      <Tile title={title}>A</Tile>
     </TileContainer>
   );
 }
@@ -217,57 +240,20 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
   const name = `${colorName} ${label}`;
   const white = Color("#ffffff");
   const black = Color("#000000");
-  const icons = showContrast ? (
-    [
-      <ContrastIcon
-        backgroundColor={bgColor}
-        colorName={name}
-        textColor={white}
-        textColorName="White"
-        size={12}
-        key="white small"
-      />,
-      <ContrastIcon
-        backgroundColor={bgColor}
-        colorName={name}
-        textColor={white}
-        textColorName="White"
-        size={18}
-        key="white large"
-      />,
-      <ContrastIcon
-        backgroundColor={bgColor}
-        colorName={name}
-        textColor={black}
-        textColorName="Black"
-        size={12}
-        key="black small"
-      />,
-      <ContrastIcon
-        backgroundColor={bgColor}
-        colorName={name}
-        textColor={black}
-        textColorName="Black"
-        size={18}
-        key="black large"
-      />
-    ]
-  ) : (
-    <ColorBlockKebab bgColor={bgColor} sassVar={sassVar} />
-  );
+  //  <ColorBlockKebab bgColor={bgColor} sassVar={sassVar} />
 
   const gridSize = "1.5rem";
   const bottomMargin = "2px";
   const blockSize = isHalfBlock ? 2 : 4;
-  const ColorBlockDiv = glamorous.div({
-    boxSizing: "border-box",
+  const ColorBlockTr = glamorous.tr({
+    // boxSizing: "border-box",
     height: `calc(${gridSize} * ${blockSize} - ${bottomMargin})`,
     margin: `0 0 ${bottomMargin} 0`,
     paddingTop: `calc(${gridSize} / 2 + ${bottomMargin / 2})`,
     paddingBottom: `calc(${gridSize} / 2 - ${bottomMargin / 2})`,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    // display: "flex",
+    // flexDirection: "row",
+    // alignItems: "center",
     color: shouldUseWhite ? "white" : "black",
     paddingLeft: "0.5em"
   });
@@ -276,13 +262,54 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
     fontWeight: 200
   });
   return (
-    <ColorBlockDiv
+    <ColorBlockTr
       key={bgColor.rgb().string()}
       style={{ background: bgColor.rgb().string() }}
     >
-      <Label>{label}</Label>
-      {icons}
-    </ColorBlockDiv>
+      <th>
+        <Label>{label}</Label>
+      </th>
+      <td>
+        <ContrastIcon
+          backgroundColor={bgColor}
+          colorName={name}
+          textColor={white}
+          textColorName="White"
+          size={12}
+          key="white small"
+        />
+      </td>
+      <td>
+        <ContrastIcon
+          backgroundColor={bgColor}
+          colorName={name}
+          textColor={white}
+          textColorName="White"
+          size={18}
+          key="white large"
+        />
+      </td>
+      <td>
+        <ContrastIcon
+          backgroundColor={bgColor}
+          colorName={name}
+          textColor={black}
+          textColorName="Black"
+          size={12}
+          key="black small"
+        />
+      </td>
+      <td>
+        <ContrastIcon
+          backgroundColor={bgColor}
+          colorName={name}
+          textColor={black}
+          textColorName="Black"
+          size={18}
+          key="black large"
+        />
+      </td>
+    </ColorBlockTr>
   );
 }
 
@@ -311,7 +338,7 @@ function ContrastIcon({
     transform: "translateY(3px)",
     color: textColor.rgb()
   });
-  return <Tile>{isValid && <span title={title}>✅</span>}</Tile>;
+  return <Tile>{isValid && <span title={title}>✓</span>}</Tile>;
 }
 
 function ColorBlockKebab({ bgColor, sassVar }) {
