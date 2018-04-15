@@ -6,4 +6,9 @@ configMaker.usePresets([
   require("cultureamp-front-end-scripts/config/webpack/presets/react-dev-tools.js")
 ]);
 configMaker.setOutputLibrary("amd");
-module.exports = configMaker.generateWebpackConfig();
+
+const config = configMaker.generateWebpackConfig();
+config.externals = [
+  "css!https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600"
+];
+module.exports = config;
