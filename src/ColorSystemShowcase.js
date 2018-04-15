@@ -15,11 +15,12 @@ export default class ColorSystemShowcase extends React.Component {
       gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
       display: "grid",
       gridGap: "1rem",
-      justifyContent: "space-between"
+      justifyContent: "space-between",
+      fontFamily: "Source Sans Pro, Helvetica, Arial, sans-serif"
     });
     const Title = glamorous.h1({
       gridColumn: "1 / -1",
-      fontWeight: 200
+      fontWeight: 600
     });
     return (
       <Grid>
@@ -34,7 +35,7 @@ export default class ColorSystemShowcase extends React.Component {
   renderColorSection(title, colors) {
     const GridHeader = glamorous.h2({
       gridColumn: "1 / -1",
-      fontWeight: 200
+      fontWeight: 600
     });
     const showAccessibility = true;
     return [
@@ -43,8 +44,10 @@ export default class ColorSystemShowcase extends React.Component {
         <ColorCard
           name={color.name}
           hex={color.hex}
+          code={color.code}
           key={color.name}
           showAccessibility={showAccessibility}
+          codeTemplate={this.props.codeTemplate}
         />
       ))
     ];
@@ -75,15 +78,19 @@ const ActionLink = glamorous.button({
 
 class ColorCard extends React.Component {
   render() {
-    const name = this.props.name;
-    const hex = this.props.hex;
+    const { name, hex } = this.props;
     const Title = glamorous.h3({
-      fontWeight: 200,
-      margin: 0
+      fontWeight: 600,
+      margin: 0,
+      textAlign: "left"
     });
     const ColorCardTable = glamorous.table({
       width: "100%",
+      tableLayout: "fixed",
       borderSpacing: "0 1px"
+    });
+    const IconTh = glamorous.th({
+      width: accessibilityTileWidth
     });
     return (
       <div>
@@ -94,34 +101,34 @@ class ColorCard extends React.Component {
                 <th>
                   <Title>{this.props.name}</Title>
                 </th>
-                <th>
+                <IconTh>
                   <AccessibilityHeaderIcon
                     isWhite={true}
                     isLarge={false}
                     hex={hex}
                   />
-                </th>
-                <th>
+                </IconTh>
+                <IconTh>
                   <AccessibilityHeaderIcon
                     isWhite={true}
                     isLarge={true}
                     hex={hex}
                   />
-                </th>
-                <th>
+                </IconTh>
+                <IconTh>
                   <AccessibilityHeaderIcon
                     isWhite={false}
                     isLarge={false}
                     hex={hex}
                   />
-                </th>
-                <th>
+                </IconTh>
+                <IconTh>
                   <AccessibilityHeaderIcon
                     isWhite={false}
                     isLarge={true}
                     hex={hex}
                   />
-                </th>
+                </IconTh>
               </tr>
             </thead>
             <tbody>{this.renderColorBlocks()}</tbody>
@@ -132,13 +139,15 @@ class ColorCard extends React.Component {
   }
 
   renderColorBlocks() {
-    const { name, hex } = this.props;
+    const { name, hex, code, codeTemplate } = this.props;
     const variations = [90, 70, 50, 30, 10, 0, -10, -20, -30, -40, -50];
     return variations.map(amount => (
       <ColorBlock
         key={amount}
         colorName={name}
         hex={hex}
+        colorCode={code}
+        codeTemplate={codeTemplate}
         amount={amount}
         showContrast={this.props.showAccessibility}
       />
@@ -146,7 +155,7 @@ class ColorCard extends React.Component {
   }
 }
 
-const accessibilityTileWidth = "46px";
+const accessibilityTileWidth = "24px";
 
 function AccessibilityHeaderIcon({ isWhite, isLarge, hex }) {
   const title =
@@ -158,12 +167,11 @@ function AccessibilityHeaderIcon({ isWhite, isLarge, hex }) {
   const Tile = glamorous.span({
     color: isWhite ? "white" : "black",
     backgroundColor: hex,
-    fontSize: isLarge ? "14px" : "10px",
-    lineHeight: isLarge ? "19px" : "18px",
+    fontSize: isLarge ? sizeInRem(14) : sizeInRem(10),
+    lineHeight: isLarge ? sizeInRem(19) : sizeInRem(18),
     display: "block",
     width: "15px",
     height: "15px",
-    lineHeight: "15px",
     margin: "0 auto 7px",
     display: "block",
     fontFamily: "sans-serif",
@@ -190,21 +198,34 @@ function shouldUseWhiteText(color) {
   return whiteContrast > blackContrast;
 }
 
-function ColorBlock({ colorName, hex, amount, showContrast }) {
+function getCodeFromTemplate(colorCode, amount, codeTemplate) {
+  return codeTemplate
+    .replace("${color}", colorCode)
+    .replace("${amount}", amount);
+}
+
+function ColorBlock({
+  colorName,
+  hex,
+  colorCode,
+  codeTemplate,
+  amount,
+  showContrast
+}) {
   let isHalfBlock = false,
     label = "100%",
-    sassVar = `$ca-palette-${colorName.toLowerCase()}`,
     bgColor = Color(hex);
+  console.log(codeTemplate);
 
   if (amount != 0) {
     const absAmount = Math.abs(amount);
     if (amount > 0) {
       bgColor = addTint(bgColor, absAmount);
-      sassVar = `add-tint(${sassVar}, ${absAmount}%)`;
+      colorCode = getCodeFromTemplate(colorCode, absAmount, codeTemplate.tint);
       label = `+${absAmount}% White`;
     } else {
       bgColor = addShade(bgColor, absAmount);
-      sassVar = `add-shade(${sassVar}, ${absAmount}%)`;
+      colorCode = getCodeFromTemplate(colorCode, absAmount, codeTemplate.shade);
       label = `+${absAmount}% Black`;
     }
     isHalfBlock = true;
@@ -214,26 +235,21 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
   const name = `${colorName} ${label}`;
   const white = Color("#ffffff");
   const black = Color("#000000");
-  //  <ColorBlockKebab bgColor={bgColor} sassVar={sassVar} />
+  //  <ColorBlockKebab bgColor={bgColor} colorAsCode={colorAsCode} />
 
   const gridSize = "1.5rem";
   const bottomMargin = "2px";
   const blockSize = isHalfBlock ? 2 : 4;
   const ColorBlockTr = glamorous.tr({
-    // boxSizing: "border-box",
     height: `calc(${gridSize} * ${blockSize} - ${bottomMargin})`,
     margin: `0 0 ${bottomMargin} 0`,
     paddingTop: `calc(${gridSize} / 2 + ${bottomMargin / 2})`,
     paddingBottom: `calc(${gridSize} / 2 - ${bottomMargin / 2})`,
-    // display: "flex",
-    // flexDirection: "row",
-    // alignItems: "center",
     color: shouldUseWhite ? "white" : "black",
     paddingLeft: "0.5em"
   });
-  const Label = glamorous.span({
-    flex: 1,
-    fontWeight: 200
+  const AccessibilityCell = glamorous.td({
+    width: accessibilityTileWidth
   });
   return (
     <ColorBlockTr
@@ -241,9 +257,9 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
       style={{ background: bgColor.rgb().string() }}
     >
       <th>
-        <Label>{label}</Label>
+        <ClickToCopyLabel label={label} value={colorCode} />
       </th>
-      <td>
+      <AccessibilityCell>
         <ContrastIcon
           backgroundColor={bgColor}
           colorName={name}
@@ -252,8 +268,8 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
           size={12}
           key="white small"
         />
-      </td>
-      <td>
+      </AccessibilityCell>
+      <AccessibilityCell>
         <ContrastIcon
           backgroundColor={bgColor}
           colorName={name}
@@ -262,8 +278,8 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
           size={18}
           key="white large"
         />
-      </td>
-      <td>
+      </AccessibilityCell>
+      <AccessibilityCell>
         <ContrastIcon
           backgroundColor={bgColor}
           colorName={name}
@@ -272,8 +288,8 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
           size={12}
           key="black small"
         />
-      </td>
-      <td>
+      </AccessibilityCell>
+      <AccessibilityCell>
         <ContrastIcon
           backgroundColor={bgColor}
           colorName={name}
@@ -282,8 +298,56 @@ function ColorBlock({ colorName, hex, amount, showContrast }) {
           size={18}
           key="black large"
         />
-      </td>
+      </AccessibilityCell>
     </ColorBlockTr>
+  );
+}
+
+function ClickToCopyLabel({ label, value }) {
+  const Div = glamorous.div({
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center"
+  });
+  const Label = glamorous.p({
+    fontWeight: 300,
+    fontSize: sizeInRem(18),
+    textAlign: "left",
+    margin: 0
+  });
+  const Input = glamorous.input({
+    display: "block",
+    textAlign: "left",
+    border: "none",
+    width: "100%",
+    background: "transparent",
+    color: "inherit",
+    textOverflow: "ellipsis",
+    fontFamily: "Source Sans Pro, sans-serif",
+    fontStyle: "italic",
+    fontSize: sizeInRem(14),
+    fontWeight: 300
+  });
+  let inputField;
+  const action = () => {
+    if (inputField) {
+      console.log(inputField);
+      inputField.select();
+      document.execCommand("copy");
+    }
+  };
+  return (
+    <Div title="Copy to clipboard" onClick={action}>
+      <Label>{label}</Label>
+      <Input
+        type="text"
+        value={value}
+        readOnly={true}
+        innerRef={i => (inputField = i)}
+      />
+    </Div>
   );
 }
 
@@ -307,7 +371,7 @@ function ContrastIcon({
   );
   const title = `${textColorName} text on '${colorName}' with a font size of at least ${size}pt is level AA contrast.`;
   const Tile = glamorous.div({
-    flex: `0 0 ${accessibilityTileWidth}`,
+    width: accessibilityTileWidth,
     textAlign: "center",
     transform: "translateY(3px)",
     color: textColor.rgb()
@@ -315,55 +379,6 @@ function ContrastIcon({
   return <Tile>{isValid && <span title={title}>✓</span>}</Tile>;
 }
 
-function ColorBlockKebab({ bgColor, sassVar }) {
-  const hex = bgColor.hex(),
-    rgb = bgColor
-      .rgb()
-      .array()
-      .map(Math.round)
-      .join(", "),
-    cmyk = bgColor
-      .cmyk()
-      .array()
-      .map(Math.round)
-      .join(", ");
-  return (
-    <span className={styles.kebabContainer}>
-      (v)
-      {/* <Kebab>
-        <MenuList>
-          <MenuHeader title="Color Values" />
-          <MenuItem {...getColorDropdownItem("SASS", sassVar)} />
-          <MenuItem {...getColorDropdownItem("HEX", hex)} />
-          <MenuItem {...getColorDropdownItem("RGB", rgb)} />
-          <MenuItem {...getColorDropdownItem("CMYK", cmyk)} />
-        </MenuList>
-      </Kebab> */}
-    </span>
-  );
+function sizeInRem(sizeInPx) {
+  return `${sizeInPx / 16}rem`;
 }
-
-const getColorDropdownItem = (type, value) => {
-  let input;
-  return {
-    children: (
-      <div className={styles.dropdownItem} title="Copy to clipboard">
-        <strong>{type}</strong>
-        <input
-          type="text"
-          value={value}
-          readOnly={true}
-          ref={i => (input = i)}
-        />
-      </div>
-    ),
-    action: () => {
-      if (input) {
-        input.select();
-        document.execCommand("copy");
-      }
-    },
-    icon: duplicate,
-    hoverIcon: true
-  };
-};

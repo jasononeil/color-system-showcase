@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import ColorSystemShowcase from "./ColorSystemShowcase";
-import "css!https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600";
+import "css!https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,600";
 
 class ColorSystemEnthraler {
   constructor(environment) {

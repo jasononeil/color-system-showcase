@@ -9,6 +9,6 @@ configMaker.setOutputLibrary("amd");
 
 const config = configMaker.generateWebpackConfig();
 config.externals = [
-  "css!https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600"
+  "css!https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,600"
 ];
 module.exports = config;
