@@ -7,7 +7,8 @@ const styles = {};
 
 export default class ColorSystemShowcase extends React.Component {
   state = {
-    showAccessibility: {}
+    showAccessibility: {},
+    codeType: "source-code"
   };
 
   render() {
@@ -18,13 +19,32 @@ export default class ColorSystemShowcase extends React.Component {
       justifyContent: "space-between",
       fontFamily: "Source Sans Pro, Helvetica, Arial, sans-serif"
     });
-    const Title = glamorous.h1({
+    const Header = glamorous.div({
       gridColumn: "1 / -1",
-      fontWeight: 600
+      display: "flex"
+    });
+    const Title = glamorous.h1({
+      fontWeight: 600,
+      flex: 1
     });
     return (
       <Grid>
-        <Title>{this.props.title}</Title>
+        <Header>
+          <Title>{this.props.title}</Title>
+          <div>
+            <select
+              value={this.state.codeType}
+              onChange={event =>
+                this.setState({ codeType: event.target.value })
+              }
+            >
+              <option value="source-code">Source Code</option>
+              <option value="hex">HEX</option>
+              <option value="rgb">RGB</option>
+              <option value="cmyk">CMYK</option>
+            </select>
+          </div>
+        </Header>
         {this.props.palette.map(section =>
           this.renderColorSection(section.title, section.colors)
         )}
@@ -45,6 +65,7 @@ export default class ColorSystemShowcase extends React.Component {
           name={color.name}
           hex={color.hex}
           code={color.code}
+          codeType={this.state.codeType}
           key={color.name}
           showAccessibility={showAccessibility}
           codeTemplate={this.props.codeTemplate}
@@ -139,19 +160,59 @@ class ColorCard extends React.Component {
   }
 
   renderColorBlocks() {
-    const { name, hex, code, codeTemplate } = this.props;
     const variations = [90, 70, 50, 30, 10, 0, -10, -20, -30, -40, -50];
-    return variations.map(amount => (
+    return variations.map(amount => this.renderBlock(amount));
+  }
+
+  renderBlock(amount) {
+    let { name, hex, code, codeTemplate, codeType } = this.props;
+    let isHalfBlock = false,
+      label = "100%",
+      bgColor = Color(hex);
+
+    if (amount != 0) {
+      const absAmount = Math.abs(amount);
+      if (amount > 0) {
+        bgColor = addTint(bgColor, absAmount);
+        code = getCodeFromTemplate(code, absAmount, codeTemplate.tint);
+        label = `+${absAmount}% White`;
+      } else {
+        bgColor = addShade(bgColor, absAmount);
+        code = getCodeFromTemplate(code, absAmount, codeTemplate.shade);
+        label = `+${absAmount}% Black`;
+      }
+      isHalfBlock = true;
+    }
+
+    let copyableCode;
+    if (codeType === "source-code") {
+      copyableCode = code;
+    } else if (codeType === "hex") {
+      copyableCode = hex.toUpperCase();
+    } else if (codeType === "rgb") {
+      copyableCode = Color(hex)
+        .rgb()
+        .array()
+        .map(Math.round)
+        .join(", ");
+    } else if (codeType === "cmyk") {
+      copyableCode = Color(hex)
+        .cmyk()
+        .array()
+        .map(Math.round)
+        .join(", ");
+    }
+
+    return (
       <ColorBlock
         key={amount}
         colorName={name}
-        hex={hex}
-        colorCode={code}
-        codeTemplate={codeTemplate}
-        amount={amount}
-        showContrast={this.props.showAccessibility}
+        label={label}
+        colorCode={copyableCode}
+        hex={bgColor.hex()}
+        isHalfBlock={isHalfBlock}
       />
-    ));
+    );
   }
 }
 
@@ -192,9 +253,9 @@ function addShade(color, percentage) {
   return color.mix(Color("#000000"), percentage / 100);
 }
 
-function shouldUseWhiteText(color) {
-  const whiteContrast = wcag.getContrastRatio(color.hex(), "#ffffff"),
-    blackContrast = wcag.getContrastRatio(color.hex(), "#000000");
+function shouldUseWhiteText(hexColor) {
+  const whiteContrast = wcag.getContrastRatio(hexColor, "#ffffff"),
+    blackContrast = wcag.getContrastRatio(hexColor, "#000000");
   return whiteContrast > blackContrast;
 }
 
@@ -204,38 +265,11 @@ function getCodeFromTemplate(colorCode, amount, codeTemplate) {
     .replace("${amount}", amount);
 }
 
-function ColorBlock({
-  colorName,
-  hex,
-  colorCode,
-  codeTemplate,
-  amount,
-  showContrast
-}) {
-  let isHalfBlock = false,
-    label = "100%",
-    bgColor = Color(hex);
-  console.log(codeTemplate);
-
-  if (amount != 0) {
-    const absAmount = Math.abs(amount);
-    if (amount > 0) {
-      bgColor = addTint(bgColor, absAmount);
-      colorCode = getCodeFromTemplate(colorCode, absAmount, codeTemplate.tint);
-      label = `+${absAmount}% White`;
-    } else {
-      bgColor = addShade(bgColor, absAmount);
-      colorCode = getCodeFromTemplate(colorCode, absAmount, codeTemplate.shade);
-      label = `+${absAmount}% Black`;
-    }
-    isHalfBlock = true;
-  }
-
-  const shouldUseWhite = shouldUseWhiteText(bgColor);
+function ColorBlock({ colorName, label, colorCode, hex, isHalfBlock }) {
+  const shouldUseWhite = shouldUseWhiteText(hex);
   const name = `${colorName} ${label}`;
-  const white = Color("#ffffff");
-  const black = Color("#000000");
-  //  <ColorBlockKebab bgColor={bgColor} colorAsCode={colorAsCode} />
+  const white = "#ffffff";
+  const black = "#000000";
 
   const gridSize = "1.5rem";
   const bottomMargin = "2px";
@@ -246,24 +280,22 @@ function ColorBlock({
     paddingTop: `calc(${gridSize} / 2 + ${bottomMargin / 2})`,
     paddingBottom: `calc(${gridSize} / 2 - ${bottomMargin / 2})`,
     color: shouldUseWhite ? "white" : "black",
+    background: hex,
     paddingLeft: "0.5em"
   });
   const AccessibilityCell = glamorous.td({
     width: accessibilityTileWidth
   });
   return (
-    <ColorBlockTr
-      key={bgColor.rgb().string()}
-      style={{ background: bgColor.rgb().string() }}
-    >
+    <ColorBlockTr key={name}>
       <th>
         <ClickToCopyLabel label={label} value={colorCode} />
       </th>
       <AccessibilityCell>
         <ContrastIcon
-          backgroundColor={bgColor}
+          backgroundColor={hex}
           colorName={name}
-          textColor={white}
+          textColor="#FFFFFF"
           textColorName="White"
           size={12}
           key="white small"
@@ -271,9 +303,9 @@ function ColorBlock({
       </AccessibilityCell>
       <AccessibilityCell>
         <ContrastIcon
-          backgroundColor={bgColor}
+          backgroundColor={hex}
           colorName={name}
-          textColor={white}
+          textColor="#FFFFFF"
           textColorName="White"
           size={18}
           key="white large"
@@ -281,9 +313,9 @@ function ColorBlock({
       </AccessibilityCell>
       <AccessibilityCell>
         <ContrastIcon
-          backgroundColor={bgColor}
+          backgroundColor={hex}
           colorName={name}
-          textColor={black}
+          textColor="#000000"
           textColorName="Black"
           size={12}
           key="black small"
@@ -291,9 +323,9 @@ function ColorBlock({
       </AccessibilityCell>
       <AccessibilityCell>
         <ContrastIcon
-          backgroundColor={bgColor}
+          backgroundColor={hex}
           colorName={name}
-          textColor={black}
+          textColor="#000000"
           textColorName="Black"
           size={18}
           key="black large"
@@ -333,7 +365,6 @@ function ClickToCopyLabel({ label, value }) {
   let inputField;
   const action = () => {
     if (inputField) {
-      console.log(inputField);
       inputField.select();
       document.execCommand("copy");
     }
@@ -363,18 +394,13 @@ function ContrastIcon({
   textColorName,
   size
 }) {
-  console.log(backgroundColor.hex(), textColor.hex());
-  const isValid = contrastIsLevelAA(
-    backgroundColor.hex(),
-    textColor.hex(),
-    size
-  );
+  const isValid = contrastIsLevelAA(backgroundColor, textColor, size);
   const title = `${textColorName} text on '${colorName}' with a font size of at least ${size}pt is level AA contrast.`;
   const Tile = glamorous.div({
     width: accessibilityTileWidth,
     textAlign: "center",
     transform: "translateY(3px)",
-    color: textColor.rgb()
+    color: textColor
   });
   return <Tile>{isValid && <span title={title}>✓</span>}</Tile>;
 }
