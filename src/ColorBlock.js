@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import glamorous from "glamorous";
 import { shouldUseWhiteText } from "./colorUtil";
 import { accessibilityTileWidth } from "./styleUtil";

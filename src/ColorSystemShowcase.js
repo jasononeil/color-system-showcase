@@ -1,17 +1,7 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import glamorous from "glamorous";
-import Color from "color";
-import wcag from "wcag-contrast-verifier/lib/wcag";
 import ColorCard from "./ColorCard";
-import ClickToCopyLabel from "./ClickToCopyLabel";
-import {
-  addTint,
-  addShade,
-  shouldUseWhiteText,
-  getCodeFromTemplate,
-  contrastIsLevelAA
-} from "./colorUtil";
+import ContrastChecker from "./ContrastChecker";
 
 export default class ColorSystemShowcase extends React.Component {
   state = {
@@ -21,8 +11,8 @@ export default class ColorSystemShowcase extends React.Component {
 
   render() {
     const Grid = glamorous.div({
-      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
       display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
       gridGap: "1rem",
       justifyContent: "space-between",
       fontFamily: "Source Sans Pro, Helvetica, Arial, sans-serif"
@@ -36,27 +26,30 @@ export default class ColorSystemShowcase extends React.Component {
       flex: 1
     });
     return (
-      <Grid>
-        <Header>
-          <Title>{this.props.title}</Title>
-          <div>
-            <select
-              value={this.state.codeType}
-              onChange={event =>
-                this.setState({ codeType: event.target.value })
-              }
-            >
-              <option value="source-code">Source Code</option>
-              <option value="hex">HEX</option>
-              <option value="rgb">RGB</option>
-              <option value="cmyk">CMYK</option>
-            </select>
-          </div>
-        </Header>
-        {this.props.palette.map(section =>
-          this.renderColorSection(section.title, section.colors)
-        )}
-      </Grid>
+      <div>
+        <Grid>
+          <Header>
+            <Title>{this.props.title}</Title>
+            <div>
+              <select
+                value={this.state.codeType}
+                onChange={event =>
+                  this.setState({ codeType: event.target.value })
+                }
+              >
+                <option value="source-code">Source Code</option>
+                <option value="hex">HEX</option>
+                <option value="rgb">RGB</option>
+                <option value="cmyk">CMYK</option>
+              </select>
+            </div>
+          </Header>
+          {this.props.palette.map(section =>
+            this.renderColorSection(section.title, section.colors)
+          )}
+        </Grid>
+        <ContrastChecker palette={this.props.palette} />
+      </div>
     );
   }
 

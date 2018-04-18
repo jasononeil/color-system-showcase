@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import glamorous from "glamorous";
 import Color from "color";
 import AccessibilityHeaderIcon from "./AccessibilityHeaderIcon";
