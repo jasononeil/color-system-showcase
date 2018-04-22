@@ -2,6 +2,7 @@ import React from "react";
 import glamorous from "glamorous";
 import ColorCard from "./ColorCard";
 import ContrastChecker from "./ContrastChecker";
+import NearestColorMatcher from "./NearestColorMatcher";
 
 export default class ColorSystemShowcase extends React.Component {
   state = {
@@ -49,6 +50,10 @@ export default class ColorSystemShowcase extends React.Component {
           )}
         </Grid>
         <ContrastChecker palette={this.props.palette} />
+        <NearestColorMatcher
+          palette={this.props.palette}
+          codeTemplate={this.props.codeTemplate}
+        />
       </div>
     );
   }

@@ -6,7 +6,9 @@ import {
   varyColor,
   getContrastRatio,
   contrastIsLevelAA,
-  contrastIsLevelAAA
+  contrastIsLevelAAA,
+  colorName,
+  variationName
 } from "./colorUtil";
 
 class ContrastChecker extends React.Component {
@@ -178,19 +180,5 @@ const variations = [
   90,
   100
 ];
-
-function variationName(variation, name) {
-  if (variation == 0) {
-    return "";
-  }
-  const mixWith = variation > 0 ? "white" : "black";
-  const amount = Math.abs(variation);
-  return `+ ${amount}% ${mixWith}`;
-}
-
-function colorName(colorName, variation) {
-  var variation = variationName(variation, colorName);
-  return variation ? `${colorName} (${variation})` : colorName;
-}
 
 export default ContrastChecker;

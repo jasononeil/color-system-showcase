@@ -24,9 +24,14 @@ export function shouldUseWhiteText(hexColor) {
 }
 
 export function getCodeFromTemplate(colorCode, amount, codeTemplate) {
-  return codeTemplate
+  if (amount == 0) {
+    return colorCode;
+  }
+  const absAmount = Math.abs(amount);
+  const template = amount > 0 ? codeTemplate.tint : codeTemplate.shade;
+  return template
     .replace("${color}", colorCode)
-    .replace("${amount}", amount);
+    .replace("${amount}", absAmount);
 }
 
 export function getContrastRatio(bgColor, fgColor, precision) {
@@ -46,4 +51,18 @@ export function contrastIsLevelAA(backgroundHex, foregroundHex, fontSize) {
 export function contrastIsLevelAAA(backgroundHex, foregroundHex, fontSize) {
   return wcag.verifyContrastRatio(backgroundHex, foregroundHex, fontSize)
     .WCAG_AAA;
+}
+
+export function variationName(variation) {
+  if (variation == 0) {
+    return "";
+  }
+  const mixWith = variation > 0 ? "white" : "black";
+  const amount = Math.abs(variation);
+  return `+ ${amount}% ${mixWith}`;
+}
+
+export function colorName(colorName, variation) {
+  var variation = variationName(variation, colorName);
+  return variation ? `${colorName} (${variation})` : colorName;
 }

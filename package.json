@@ -17,6 +17,7 @@
     "cultureamp-front-end-scripts": "https://github.com/cultureamp/cultureamp-front-end-scripts#front-end/presets",
     "glamor": "^2.20.40",
     "glamorous": "^4.12.1",
+    "nearest-color-shade": "^1.0.2",
     "prop-types": "^15.6.1",
     "wcag-contrast-verifier": "^1.1.0"
   },

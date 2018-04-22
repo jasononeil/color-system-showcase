@@ -81,13 +81,12 @@ class ColorCard extends React.Component {
 
     if (amount != 0) {
       const absAmount = Math.abs(amount);
+      code = getCodeFromTemplate(code, amount, codeTemplate);
       if (amount > 0) {
         bgColor = addTint(bgColor, absAmount);
-        code = getCodeFromTemplate(code, absAmount, codeTemplate.tint);
         label = `+${absAmount}% White`;
       } else {
         bgColor = addShade(bgColor, absAmount);
-        code = getCodeFromTemplate(code, absAmount, codeTemplate.shade);
         label = `+${absAmount}% Black`;
       }
       isHalfBlock = true;
@@ -97,15 +96,15 @@ class ColorCard extends React.Component {
     if (codeType === "source-code") {
       copyableCode = code;
     } else if (codeType === "hex") {
-      copyableCode = hex.toUpperCase();
+      copyableCode = bgColor.hex().toUpperCase();
     } else if (codeType === "rgb") {
-      copyableCode = Color(hex)
+      copyableCode = bgColor
         .rgb()
         .array()
         .map(Math.round)
         .join(", ");
     } else if (codeType === "cmyk") {
-      copyableCode = Color(hex)
+      copyableCode = bgColor
         .cmyk()
         .array()
         .map(Math.round)
