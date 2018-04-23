@@ -1,0 +1,32 @@
+{
+  "title": "string",
+  "palette": {
+    "type": "arrayOf",
+    "subType": {
+      "type": "shape",
+      "shape": {
+        "title": "string",
+        "colors": {
+          "type": "arrayOf",
+          "subtype": {
+            "type": "shape",
+            "subtype": {
+              "name": "string",
+              "hex": "string",
+              "code": "string"
+            }
+          }
+        },
+        "name": "?string",
+        "color": "?string"
+      }
+    }
+  },
+  "codeTemplate": {
+    "type": "shape",
+    "subtype": {
+      "tint": "string",
+      "shade": "string"
+    }
+  }
+}
