@@ -42,24 +42,36 @@ class NearestColorMatcher extends React.Component {
     const Grid = glamorous.div({
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
-      fontFamily: "Source Sans Pro, Helvetica, Arial, sans-serif"
+      fontFamily: "Source Sans Pro, Helvetica, Arial, sans-serif",
+      gridColumnGap: "3px",
+      justifyContent: "center"
     });
     const ColorToMatchForm = glamorous.form({
       background: colorToMatch,
-      gridColumn: "1 / 2"
+      gridColumn: "1 / 2",
+      margin: 0,
+      padding: "30px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-around"
+    });
+    const Label = glamorous.label({
+      display: "block"
     });
     const H2 = glamorous.h2({
       gridColumn: "1 / -1"
     });
     const TextPreview = glamorous.div({
       background: nearestColor.hex(),
-      padding: "10px",
-      margin: "2px",
-      gridColumn: "2 / 3"
+      padding: "30px",
+      margin: 0,
+      gridColumn: "2 / 3",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center"
     });
     const StatementText = glamorous.p({
       fontSize: "1.5rem",
-      margin: "0 10px 10px 10px",
       textAlign: "center"
     });
 
@@ -67,7 +79,7 @@ class NearestColorMatcher extends React.Component {
       <Grid>
         <H2>Nearest Color Matcher</H2>
         <ColorToMatchForm>
-          <label htmlFor="nearest-color-input">Hex color:</label>
+          <Label htmlFor="nearest-color-input">Hex color:</Label>
           <input
             id="nearest-color-input"
             type="text"

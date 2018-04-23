@@ -61,7 +61,7 @@ class ContrastChecker extends React.Component {
     });
     const StatementText = glamorous.p({
       fontSize: "1.5rem",
-      margin: "0 10px 10px 10px",
+      margin: "20px 10px",
       textAlign: "center"
     });
     const Table = glamorous.table({
@@ -70,25 +70,29 @@ class ContrastChecker extends React.Component {
     });
 
     return (
-      <Grid>
+      <div>
         <H2>Contrast Checker</H2>
-        <SelectColor
-          colors={colors}
-          name="Background"
-          onUpdateColor={c => this.setState({ bgColor: c })}
-          onUpdateVariation={v => this.setState({ bgVariation: v })}
-          currentColor={bgColor}
-          currentVariation={bgVariation}
-        />
-        <SelectColor
-          colors={colors}
-          name="Foreground"
-          onUpdateColor={c => this.setState({ fgColor: c })}
-          onUpdateVariation={v => this.setState({ fgVariation: v })}
-          currentColor={fgColor}
-          currentVariation={fgVariation}
-        />
         <TextPreview>
+          <Grid>
+            <SelectColor
+              colors={colors}
+              name="Background"
+              onUpdateColor={c => this.setState({ bgColor: c })}
+              onUpdateVariation={v => this.setState({ bgVariation: v })}
+              currentColor={bgColor}
+              currentVariation={bgVariation}
+              fgColor={fgHex}
+            />
+            <SelectColor
+              colors={colors}
+              name="Foreground"
+              onUpdateColor={c => this.setState({ fgColor: c })}
+              onUpdateVariation={v => this.setState({ fgVariation: v })}
+              currentColor={fgColor}
+              currentVariation={fgVariation}
+              fgColor={fgHex}
+            />
+          </Grid>
           <StatementText>
             <strong>{colorName(fgColor, fgVariation)}</strong> text on a{" "}
             <strong>{colorName(bgColor, bgVariation)}</strong> background has a
@@ -113,7 +117,7 @@ class ContrastChecker extends React.Component {
             </tr>
           </Table>
         </TextPreview>
-      </Grid>
+      </div>
     );
   }
 }
@@ -124,10 +128,14 @@ function SelectColor({
   onUpdateColor,
   onUpdateVariation,
   currentColor,
-  currentVariation
+  currentVariation,
+  fgColor
 }) {
+  const Fieldset = glamorous.fieldset({
+    borderColor: fgColor
+  });
   return (
-    <fieldset>
+    <Fieldset>
       <legend>{name}</legend>
       <select
         onChange={e => onUpdateColor(e.target.value)}
@@ -149,7 +157,7 @@ function SelectColor({
           </option>
         ))}
       </select>
-    </fieldset>
+    </Fieldset>
   );
 }
 
