@@ -11,6 +11,19 @@ export default class ColorSystemShowcase extends React.Component {
   };
 
   render() {
+    if (!this.props.palette || !this.props.codeTemplate || !this.props.title) {
+      return (
+        <p>
+          Please make sure your JSON provides values for <code>title</code>,{" "}
+          <code>palette</code> and <code>codeTemplate</code>. See{" "}
+          <a href="https://enthraler.com/templates/github/jasononeil/color-system-showcase">
+            the README
+          </a>{" "}
+          for some example JSON.
+        </p>
+      );
+    }
+
     const Grid = glamorous.div({
       display: "grid",
       gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
