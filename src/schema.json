@@ -8,9 +8,9 @@
         "title": "string",
         "colors": {
           "type": "arrayOf",
-          "subtype": {
+          "subType": {
             "type": "shape",
-            "subtype": {
+            "subType": {
               "name": "string",
               "hex": "string",
               "code": "string"
@@ -24,7 +24,7 @@
   },
   "codeTemplate": {
     "type": "shape",
-    "subtype": {
+    "subType": {
       "tint": "string",
       "shade": "string"
     }

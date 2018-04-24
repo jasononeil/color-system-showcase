@@ -1,6 +1,6 @@
 {
   "name": "color-system-enthraler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description":
     "An enthraler template for showcasing a color palette, including tint and shade variations, with built in copy-paste of color codes and accessibility hints",
   "author": "Jason O'Neil",
